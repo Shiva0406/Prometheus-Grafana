@@ -1,0 +1,59 @@
+#Port forward
+kubectl port-forward svc/argocd-server -n argocd 8080:443 --address 0.0.0.0
+
+
+
+# CLI login
+argocd login 184.198.30.114:8080 \
+--username admin \
+--password admin \
+--insecure
+
+
+===============================================================
+
+kubectl apply -f coffee-shop-application.yaml   (Using ArgoCD)
+
+kubectl port-forward svc/frontend 8085:80 -n coffee-shop --address 0.0.0.0
+
+
+============================ Monitoring ========================================
+
+Optional – Get Grafana password from Kubernetes
+If you forget your configured password:
+kubectl get secret \
+-n monitoring kube-prometheus-stack-grafana \
+-o jsonpath="{.data.admin-password}" | base64 -d
+
+echo
+
+ChangeMe-Admin-2026!
+-------------------------------------------
+Get username:
+kubectl get secret \
+-n monitoring kube-prometheus-stack-grafana \
+-o jsonpath="{.data.admin-user}" | base64 -d
+
+echo
+
+admin
+====================================================
+
+Port forwarding: Prometheus
+
+kubectl port-forward \
+-n monitoring \
+svc/kube-prometheus-stack-prometheus \
+9090:9090 --address 0.0.0.0 &
+
+------------------------------------------
+
+Port forwarding: Grafana 
+
+kubectl port-forward \
+-n monitoring \
+svc/kube-prometheus-stack-grafana \
+3000:80 --address 0.0.0.0 &
+
+
+=============================================
